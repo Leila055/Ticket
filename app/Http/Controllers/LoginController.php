@@ -25,7 +25,7 @@ class LoginController extends Controller
                       ->first();
         $response = "";
         ($user) ? $response ='exist' : $response ='not_exist';
-        return $response->json([
+        return response()->json([
              'code'=>200,
             'response'=>$response
         ]);
@@ -124,15 +124,15 @@ public function activationcode($token){
 
             }else{
                 DB::table('users')
-                   ->where('id',$user->id)
+                   ->where('id',$user_exist->id)
                    ->update([
                     'email'=>$new_email,
                     'updated_at'=>new \DateTimeImmutable
 
                    ]);
-                   $activation_code=$user->activation_code;
-                   $activation_token=$user->activation_token;
-                   $name=$user->name;
+                   $activation_code=$user_exist->activation_code;
+                   $activation_token=$user_exist->activation_token;
+                   $name=$user_exist->name;
                    $emailSend= new EmailService;
                    $subject='Activate your account';
                    $emailSend->sendEmail( $subject,$new_email,$name,true,$activation_code,$activation_token);
@@ -146,6 +146,10 @@ public function activationcode($token){
            }else{
                  return view('auth.activation_account_change_email',['token'=>$token]);
            }
+   }
+
+   public function ForgotPassword(){
+    return view('auth.forgot_password');
    }
 
 }
