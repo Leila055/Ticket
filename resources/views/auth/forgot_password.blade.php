@@ -12,9 +12,9 @@
              @include('alerts.alert-message')
 
              <label for="email-send" class="form-label">Email</label>
-             <input type="email" name="email-send" id="email-send" class="form-control" placeholder="please entre your address email">
+             <input type="email" name="email-send" id="email-send" class="form-control @error('email-error') is-invalid  @enderror" placeholder="please entre your address email" value="@if(Session::has('old_email')){{Session::get('old_email')}} @endif" required>
              <div class="d-grid gap-2">
-                <button class="btn btn-primary" type="submit">Reset Password</button>
+                <button class="btn btn-primary" type="submit" >Reset Password</button>
              </div>
              <p class="text-center text-muted">Back to <a href="{{route('login')}}">login</a></p>
             </form>

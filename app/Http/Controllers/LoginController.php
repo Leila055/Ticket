@@ -149,6 +149,29 @@ public function activationcode($token){
    }
 
    public function ForgotPassword(){
+
+    //si la rquette est de type post
+    if($this->request->isMethod('post')){
+       $email=$this->request->input('email-send');
+       $user=DB::table('users')->where('email',$email)->first();
+          if($user){
+            $full_name=$user->name;
+            //on genere un token pou renitialisation de mot de passe de l'utisateur
+            $activation_token=md5(uniqid()).$email.sha1($email);
+            $emailresetpwd=new EmailService;
+            $subject='Activate your account';
+            $emailresetpwd->resetPassword( $subject,$email,$full_name,true,$activation_token);
+
+
+             }
+             else{
+                $message='the email entred does not exist';
+                return back()->withErrors(['email-error'=>$message])
+                            ->with('old_email',$email)
+                            ->with('danger',$message);
+             }
+
+        }
     return view('auth.forgot_password');
    }
 
