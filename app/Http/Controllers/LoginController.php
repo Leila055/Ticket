@@ -154,6 +154,7 @@ public function activationcode($token){
     if($this->request->isMethod('post')){
        $email=$this->request->input('email-send');
        $user=DB::table('users')->where('email',$email)->first();
+       $message=null;
           if($user){
             $full_name=$user->name;
             //on genere un token pou renitialisation de mot de passe de l'utisateur
@@ -161,6 +162,15 @@ public function activationcode($token){
             $emailresetpwd=new EmailService;
             $subject='Activate your account';
             $emailresetpwd->resetPassword( $subject,$email,$full_name,true,$activation_token);
+
+            DB::table('users')
+               ->where('email',$email)
+               ->update(['activation_token'=>$activation_token]);
+
+            $message='we have just send the request,please check your mail-box';
+            return back()->withErrors(['email-success'=>$message])
+                         ->with('old_email',$email)
+                         ->with('success',$message);
 
 
              }
@@ -173,6 +183,12 @@ public function activationcode($token){
 
         }
     return view('auth.forgot_password');
+   }
+   public function changepassword($token){
+    return view('auth.change_password',[
+        'activation_token'=>$token
+    ]);
+
    }
 
 }
